@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>StudentFlow – Student Expense Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="home-page">
+  <div class="home-bg">
+    <div class="home-bg-gradient"></div>
+    <div class="home-bg-grid"></div>
+    <div class="home-bg-orb home-bg-orb-1"></div>
+    <div class="home-bg-orb home-bg-orb-2"></div>
+    <div class="home-bg-orb home-bg-orb-3"></div>
+  </div>
+
+  <nav class="home-nav">
+    <div class="home-nav-inner">
+      <a href="/" class="home-logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>StudentFlow</span>
+      </a>
+      <div class="home-nav-actions">
+        {% if username %}
+        <a href="/logout" class="btn-nav btn-nav-ghost">Logout</a>
+        <a href="/dashboard" class="btn-nav btn-nav-primary">
+          <i class="fas fa-arrow-right me-2"></i>Dashboard
+        </a>
+        {% else %}
+        <a href="/login" class="btn-nav btn-nav-ghost">Login</a>
+        <a href="/login" class="btn-nav btn-nav-primary">
+          <i class="fas fa-rocket me-2"></i>Get Started
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main class="home-main">
+    <section class="home-hero">
+      <div class="hero-badge">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Built for students</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="hero-title-line">Manage your</span>
+        <span class="hero-title-accent">student finances</span>
+      </h1>
+      <p class="hero-subtitle">
+        Track allowances, scholarships, part-time income and every expense. Stay in control of your money throughout the semester.
+      </p>
+      <div class="hero-cta">
+        {% if username %}
+        <a href="/dashboard" class="btn-hero btn-hero-primary">
+          <span>Go to Dashboard</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <p class="hero-welcome">Welcome back, <strong>{{ username }}</strong> 👋</p>
+        {% else %}
+        <a href="/login" class="btn-hero btn-hero-primary">
+          <span>Start for free</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="/login#register" class="btn-hero btn-hero-outline">
+          <span>I have an account</span>
+          <i class="fas fa-sign-in-alt"></i>
+        </a>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="home-features">
+      <h2 class="features-title">Everything a student needs</h2>
+      <div class="features-grid">
+        <article class="feature-card" style="--delay: 0.1s">
+          <div class="feature-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <h3>Track income & expenses</h3>
+          <p>Log allowances from parents, scholarships, part-time jobs and all your expenses in one place.</p>
+        </article>
+        <article class="feature-card" style="--delay: 0.2s">
+          <div class="feature-icon">
+            <i class="fas fa-bullseye"></i>
+          </div>
+          <h3>Monthly budget goal</h3>
+          <p>Set a monthly spending limit and get a real-time visual of how close you are to your budget.</p>
+        </article>
+        <article class="feature-card" style="--delay: 0.3s">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Spending insights</h3>
+          <p>Visual charts show exactly where your money goes, by category and over time.</p>
+        </article>
+        <article class="feature-card" style="--delay: 0.4s">
+          <div class="feature-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <h3>Monthly reports</h3>
+          <p>Download detailed monthly summaries as CSV to review or share with your parents.</p>
+        </article>
+        <article class="feature-card" style="--delay: 0.5s">
+          <div class="feature-icon">
+            <i class="fas fa-piggy-bank"></i>
+          </div>
+          <h3>Savings tracker</h3>
+          <p>See your net savings (income minus expenses) at a glance every month.</p>
+        </article>
+        <article class="feature-card" style="--delay: 0.6s">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Secure & private</h3>
+          <p>Your financial data is password-protected and only visible to you.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-cta-section">
+      <div class="cta-box">
+        <h2>Start tracking your finances today</h2>
+        <p>Join StudentFlow — free forever for students.</p>
+        {% if not username %}
+        <a href="/login" class="btn-hero btn-hero-primary btn-hero-lg">
+          <span>Get started now</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        {% else %}
+        <a href="/dashboard" class="btn-hero btn-hero-primary btn-hero-lg">
+          <span>Open Dashboard</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        {% endif %}
+      </div>
+    </section>
+  </main>
+
+  <footer class="home-footer">
+    <p>StudentFlow &middot; Student Personal Finance Tracker</p>
+  </footer>
+</body>
+</html>

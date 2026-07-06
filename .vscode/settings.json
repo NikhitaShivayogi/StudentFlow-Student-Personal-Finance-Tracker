@@ -1,0 +1,11 @@
+{
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportIncompatibleMethodOverride": "none",
+        "reportOverlappingOverload": "none"
+    },
+    "cursorpyright.analysis.diagnosticSeverityOverrides": {
+        "reportIncompatibleMethodOverride": "none",
+        "reportOverlappingOverload": "none"
+    },
+    "liveServer.settings.port": 5501
+}

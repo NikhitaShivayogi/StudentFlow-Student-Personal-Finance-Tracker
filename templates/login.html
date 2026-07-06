@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>StudentFlow – Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .auth-page .auth-back {
+      position: absolute; top: 1.5rem; left: 1.5rem;
+      color: var(--text-light); text-decoration: none;
+      font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;
+      transition: color 0.3s;
+    }
+    .auth-page .auth-back:hover { color: var(--accent); }
+    .auth-card { position: relative; padding-top: 3rem; }
+    .d-none { display: none !important; }
+    .w-100 { width: 100%; }
+    .mt-3 { margin-top: 1rem; }
+    .me-2 { margin-right: 0.5rem; }
+    .auth-divider {
+      text-align: center; color: var(--text-light); font-size: 0.85rem;
+      margin: 0.5rem 0; position: relative;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; position: absolute; top: 50%; width: 40%;
+      height: 1px; background: var(--border);
+    }
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+  </style>
+</head>
+<body class="auth-page">
+  <div class="auth-bg-shape"></div>
+  <a href="/" class="auth-back"><i class="fas fa-arrow-left"></i> Back to home</a>
+  <main class="auth-wrap">
+    <section class="auth-card">
+      <div class="auth-header">
+        <h1><i class="fas fa-graduation-cap me-2"></i>StudentFlow</h1>
+        <p>Sign in to manage your student finances</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="showLogin" class="active" type="button">Login</button>
+        <button id="showRegister" type="button">Register</button>
+      </div>
+
+      <div id="authAlert" class="auth-alert d-none"></div>
+
+      <form id="loginForm" class="auth-form">
+        <label><i class="fas fa-user me-1"></i> Username</label>
+        <input type="text" name="username" required minlength="3" class="form-control" placeholder="Enter your username" autocomplete="username">
+        <label><i class="fas fa-lock me-1"></i> Password</label>
+        <input type="password" name="password" required minlength="6" class="form-control" placeholder="Enter your password" autocomplete="current-password">
+        <button type="submit" class="btn btn-gradient w-100 mt-3">
+          <i class="fas fa-sign-in-alt me-2"></i>Login
+        </button>
+      </form>
+
+      <form id="registerForm" class="auth-form d-none">
+        <label><i class="fas fa-user-plus me-1"></i> Choose Username</label>
+        <input type="text" name="username" required minlength="3" class="form-control" placeholder="Pick a username (min 3 chars)" autocomplete="username">
+        <label><i class="fas fa-lock me-1"></i> Choose Password</label>
+        <input type="password" name="password" required minlength="6" class="form-control" placeholder="Min 6 characters" autocomplete="new-password">
+        <button type="submit" class="btn btn-gradient w-100 mt-3">
+          <i class="fas fa-graduation-cap me-2"></i>Create Student Account
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const showLogin = document.getElementById('showLogin');
+      const showRegister = document.getElementById('showRegister');
+      const authAlert = document.getElementById('authAlert');
+
+      if (window.location.hash === '#register') { showRegister.click(); }
+
+      function setTab(mode) {
+        const loginMode = mode === 'login';
+        loginForm.classList.toggle('d-none', !loginMode);
+        registerForm.classList.toggle('d-none', loginMode);
+        showLogin.classList.toggle('active', loginMode);
+        showRegister.classList.toggle('active', !loginMode);
+        authAlert.classList.add('d-none');
+      }
+
+      function showMsg(msg, success) {
+        authAlert.textContent = msg;
+        authAlert.classList.remove('d-none');
+        authAlert.classList.toggle('success', !!success);
+      }
+
+      async function submitAuth(url, form) {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) { showMsg(data.error || 'Request failed.', false); return; }
+        if (url === '/register') { showMsg('Account created! Please login.', true); setTab('login'); return; }
+        window.location.href = data.redirect || '/dashboard';
+      }
+
+      showLogin.addEventListener('click', function () { setTab('login'); });
+      showRegister.addEventListener('click', function () { setTab('register'); });
+
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        submitAuth('/login', loginForm).catch(function () { showMsg('Login failed. Try again.', false); });
+      });
+      registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        submitAuth('/register', registerForm).catch(function () { showMsg('Registration failed. Try again.', false); });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>StudentFlow – My Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    body{background:var(--bg);font-family:'Outfit',system-ui,sans-serif;color:var(--text);min-height:100vh}
+    /* NAV */
+    .mh-nav{background:var(--card-glass);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:.9rem 1.5rem;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;animation:navSlideDown .5s ease-out}
+    .mh-logo{color:var(--text);font-weight:700;font-size:1.2rem;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+    .mh-logo i{color:var(--accent)}
+    .mh-nav-right{display:flex;align-items:center;gap:.6rem}
+    .nav-pill{padding:.4rem .9rem;border-radius:10px;font-size:.875rem;font-weight:600;text-decoration:none;border:1px solid var(--border);color:var(--text-light);transition:all .25s;display:flex;align-items:center;gap:.35rem}
+    .nav-pill:hover{color:var(--text);border-color:var(--accent)}
+    .nav-pill.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--text-dark);border-color:transparent}
+    .nav-pill.primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(6,182,212,.35)}
+    /* MAIN */
+    .mh-main{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+    /* HERO PROFILE */
+    .profile-hero{background:linear-gradient(135deg,rgba(6,182,212,.15),rgba(14,116,144,.1));border:1px solid rgba(6,182,212,.25);border-radius:24px;padding:2rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.75rem;flex-wrap:wrap;animation:fadeInUp .6s ease-out}
+    .avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:var(--text-dark);flex-shrink:0;box-shadow:0 8px 24px rgba(6,182,212,.4)}
+    .profile-info h2{font-size:1.5rem;font-weight:800;color:var(--text);margin:0 0 .2rem}
+    .profile-info .username-tag{font-size:.875rem;color:var(--text-light);margin-bottom:.5rem}
+    .profile-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+    .chip-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;background:var(--card-glass);border:1px solid var(--border);border-radius:50px;font-size:.78rem;color:var(--text-light)}
+    .chip-tag i{color:var(--accent);font-size:.72rem}
+    .profile-hero-actions{margin-left:auto}
+    /* STATS GRID */
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+    .stat-card{border-radius:18px;padding:1.35rem 1.5rem;display:flex;align-items:center;gap:1rem;animation:dashCardIn .5s ease-out both}
+    .stat-card.s-balance{background:linear-gradient(135deg,#0e7490,#0c4a6e);border:1px solid rgba(6,182,212,.3)}
+    .stat-card.s-income{background:linear-gradient(135deg,#064e3b,#065f46);border:1px solid rgba(16,185,129,.3)}
+    .stat-card.s-expense{background:linear-gradient(135deg,#450a0a,#7f1d1d);border:1px solid rgba(239,68,68,.3)}
+    .stat-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+    .s-balance .stat-icon{background:rgba(255,255,255,.15);color:#fff}
+    .s-income  .stat-icon{background:rgba(16,185,129,.25);color:#34d399}
+    .s-expense .stat-icon{background:rgba(239,68,68,.25);color:#f87171}
+    .stat-label{font-size:.75rem;color:rgba(255,255,255,.6);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+    .stat-value{font-size:1.35rem;font-weight:800;color:#fff}
+    .stat-sub{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:.1rem}
+    @keyframes dashCardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+    /* QUICK ACTIONS */
+    .actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+    .action-card{background:rgba(30,41,59,.6);border:1px solid var(--border);border-radius:18px;padding:1.5rem 1.25rem;text-align:center;text-decoration:none;transition:all .3s;animation:dashCardIn .6s ease-out both}
+    .action-card:hover{border-color:var(--accent);transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,.2)}
+    .action-icon{width:52px;height:52px;border-radius:14px;margin:0 auto .9rem;display:flex;align-items:center;justify-content:center;font-size:1.35rem;transition:transform .3s}
+    .action-card:hover .action-icon{transform:scale(1.1) rotate(-5deg)}
+    .action-title{font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:.3rem}
+    .action-desc{font-size:.78rem;color:var(--text-light);line-height:1.5}
+    /* SECTION */
+    .mh-section{margin-bottom:2rem}
+    .mh-section-title{font-size:.78rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.9rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+    .mh-card{background:rgba(30,41,59,.6);border:1px solid var(--border);border-radius:20px;padding:1.5rem;animation:dashCardIn .6s ease-out both}
+    /* RECENT ACTIVITY */
+    .recent-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .recent-row:last-child{border-bottom:none}
+    .recent-badge{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+    .recent-badge.inc{background:rgba(16,185,129,.2);color:#34d399}
+    .recent-badge.exp{background:rgba(239,68,68,.15);color:#f87171}
+    .recent-cat{font-weight:600;font-size:.875rem;color:var(--text)}
+    .recent-date{font-size:.75rem;color:var(--text-light)}
+    .recent-amt{font-weight:700;font-size:.9rem}
+    .recent-amt.inc{color:#34d399}
+    .recent-amt.exp{color:#f87171}
+    /* FORM */
+    .mh-form-label{font-size:.8rem;font-weight:500;color:var(--text-light);margin-bottom:.3rem;display:block}
+    .mh-input{background:rgba(30,41,59,.8);border:1px solid rgba(148,163,184,.2);color:var(--text);border-radius:10px;padding:.6rem .9rem;font-size:.875rem;width:100%;transition:all .25s;font-family:inherit}
+    .mh-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(6,182,212,.2)}
+    .mh-input::placeholder{color:rgba(148,163,184,.45)}
+    .mh-input option{background:#1e293b;color:#f1f5f9}
+    .btn-save{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--text-dark);border:none;border-radius:12px;padding:.65rem 1.5rem;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .3s;font-family:inherit}
+    .btn-save:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(6,182,212,.4)}
+    .btn-danger{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;border:none;border-radius:12px;padding:.65rem 1.5rem;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .3s;font-family:inherit}
+    .btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(239,68,68,.4)}
+    /* TOAST */
+    .mh-toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(60px);background:linear-gradient(135deg,var(--accent-2),var(--accent));color:#fff;padding:13px 26px;border-radius:50px;font-weight:600;font-size:.9rem;opacity:0;transition:all .45s cubic-bezier(.68,-.55,.265,1.55);box-shadow:0 10px 36px rgba(6,182,212,.4);z-index:999;pointer-events:none}
+    .mh-toast.error{background:linear-gradient(135deg,#dc2626,#f87171)}
+    .mh-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .me-1{margin-right:.25rem}.me-2{margin-right:.5rem}
+    @media(max-width:767px){
+      .stats-grid{grid-template-columns:1fr}
+      .actions-grid{grid-template-columns:1fr 1fr}
+      .profile-hero{gap:1rem}
+      .profile-hero-actions{margin-left:0;width:100%}
+      .mh-main{padding:1rem .9rem}
+    }
+    @media(max-width:480px){.actions-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="mh-nav">
+    <a href="/home" class="mh-logo"><i class="fas fa-graduation-cap"></i> StudentFlow</a>
+    <div class="mh-nav-right">
+      <a href="/home" class="nav-pill primary"><i class="fas fa-home me-1"></i>Home</a>
+      <a href="/dashboard" class="nav-pill"><i class="fas fa-chart-pie me-1"></i>Dashboard</a>
+      <a href="/logout" class="nav-pill"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+    </div>
+  </nav>
+
+  <main class="mh-main">
+
+    <!-- PROFILE HERO -->
+    <div class="profile-hero">
+      <div class="avatar" id="avatarInitials">{{ (profile.display_name or username)[0] | upper }}</div>
+      <div class="profile-info">
+        <h2>{{ profile.display_name or username }}</h2>
+        <div class="username-tag"><i class="fas fa-at me-1" style="color:var(--accent)"></i>{{ username }} &nbsp;·&nbsp; Member since {{ member_since }}</div>
+        <div class="profile-chips">
+          {% if profile.college %}<span class="chip-tag"><i class="fas fa-university"></i>{{ profile.college }}</span>{% endif %}
+          {% if profile.course  %}<span class="chip-tag"><i class="fas fa-book-open"></i>{{ profile.course }}</span>{% endif %}
+          {% if profile.year_of_study %}<span class="chip-tag"><i class="fas fa-layer-group"></i>Year {{ profile.year_of_study }}</span>{% endif %}
+          {% if not profile.college and not profile.course %}
+            <span class="chip-tag" style="color:rgba(148,163,184,.5);border-style:dashed"><i class="fas fa-pen"></i>Complete your profile below</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="profile-hero-actions">
+        <div style="font-size:.78rem;color:var(--text-light);text-align:center;margin-bottom:.35rem">Total Transactions</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--accent);text-align:center">{{ stats.tx_count }}</div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card s-balance">
+        <div class="stat-icon"><i class="fas fa-piggy-bank"></i></div>
+        <div>
+          <div class="stat-label">Net Balance</div>
+          <div class="stat-value" style="color:{{ '#34d399' if stats.balance >= 0 else '#f87171' }}">
+            Rs {{ "%.2f"|format(stats.balance|abs) }}
+          </div>
+          <div class="stat-sub">All time {{ 'savings' if stats.balance >= 0 else 'deficit' }}</div>
+        </div>
+      </div>
+      <div class="stat-card s-income">
+        <div class="stat-icon"><i class="fas fa-arrow-down"></i></div>
+        <div>
+          <div class="stat-label">Total Income</div>
+          <div class="stat-value">Rs {{ "%.2f"|format(stats.total_income) }}</div>
+          <div class="stat-sub">This month: Rs {{ "%.2f"|format(stats.month_income) }}</div>
+        </div>
+      </div>
+      <div class="stat-card s-expense">
+        <div class="stat-icon"><i class="fas fa-arrow-up"></i></div>
+        <div>
+          <div class="stat-label">Total Expenses</div>
+          <div class="stat-value">Rs {{ "%.2f"|format(stats.total_expense) }}</div>
+          <div class="stat-sub">This month: Rs {{ "%.2f"|format(stats.month_expense) }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="mh-section">
+      <div class="mh-section-title">Quick Actions</div>
+      <div class="actions-grid">
+        <a href="/dashboard" class="action-card" style="--delay:.1s">
+          <div class="action-icon" style="background:linear-gradient(135deg,var(--accent),var(--accent-2))"><i class="fas fa-chart-pie" style="color:var(--text-dark)"></i></div>
+          <div class="action-title">Expense Dashboard</div>
+          <div class="action-desc">Add transactions, view charts, track spending</div>
+        </a>
+        <a href="/dashboard#range" class="action-card" style="--delay:.15s">
+          <div class="action-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)"><i class="fas fa-calendar-range" style="color:#fff"></i></div>
+          <div class="action-title">Date Range Report</div>
+          <div class="action-desc">Analyse spending for any custom period</div>
+        </a>
+        <a href="/dashboard" class="action-card" style="--delay:.2s" id="setBudgetLink">
+          <div class="action-icon" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><i class="fas fa-bullseye" style="color:#fff"></i></div>
+          <div class="action-title">Set Budget Goal</div>
+          <div class="action-desc">Monthly or custom period spending limit</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <!-- RECENT ACTIVITY -->
+      <div class="col-lg-5">
+        <div class="mh-section">
+          <div class="mh-section-title">Recent Activity</div>
+          <div class="mh-card">
+            {% if recent %}
+              {% for tx in recent %}
+              <div class="recent-row">
+                <div class="d-flex align-items-center" style="gap:.75rem;min-width:0">
+                  <div class="recent-badge {{ 'inc' if tx.type == 'income' else 'exp' }}">
+                    <i class="fas {{ 'fa-arrow-down' if tx.type == 'income' else 'fa-arrow-up' }}"></i>
+                  </div>
+                  <div style="min-width:0">
+                    <div class="recent-cat" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ tx.category }}</div>
+                    <div class="recent-date">{{ tx.date }}</div>
+                  </div>
+                </div>
+                <div class="recent-amt {{ 'inc' if tx.type == 'income' else 'exp' }}">
+                  {{ '+' if tx.type == 'income' else '-' }} Rs {{ "%.2f"|format(tx.amount) }}
+                </div>
+              </div>
+              {% endfor %}
+              <div style="text-align:center;margin-top:1rem">
+                <a href="/dashboard" style="font-size:.82rem;color:var(--accent);text-decoration:none;font-weight:600">View all transactions →</a>
+              </div>
+            {% else %}
+              <div style="text-align:center;padding:2rem;color:var(--text-light);font-size:.9rem">
+                <i class="fas fa-inbox" style="font-size:2rem;opacity:.3;display:block;margin-bottom:.5rem"></i>
+                No transactions yet.<br><a href="/dashboard" style="color:var(--accent)">Add your first one →</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE EDITOR -->
+      <div class="col-lg-7">
+        <div class="mh-section">
+          <div class="mh-section-title">My Profile</div>
+          <div class="mh-card">
+            <form id="profileForm">
+              <div class="row g-2">
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-id-card me-1"></i>Display Name</label>
+                  <input type="text" name="display_name" class="mh-input" maxlength="100"
+                    value="{{ profile.display_name }}" placeholder="e.g. Ramu">
+                </div>
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-university me-1"></i>College / University</label>
+                  <input type="text" name="college" class="mh-input" maxlength="150"
+                    value="{{ profile.college }}" placeholder="e.g. VTU Belgaum">
+                </div>
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-book-open me-1"></i>Course / Branch</label>
+                  <input type="text" name="course" class="mh-input" maxlength="100"
+                    value="{{ profile.course }}" placeholder="e.g. B.E. Computer Science">
+                </div>
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-layer-group me-1"></i>Year of Study</label>
+                  <select name="year_of_study" class="mh-input">
+                    <option value="">— Select year —</option>
+                    {% for y in ['1','2','3','4','5','Postgrad','PhD'] %}
+                    <option value="{{ y }}" {{ 'selected' if profile.year_of_study == y }}>{{ 'Year ' + y if y not in ['Postgrad','PhD'] else y }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-coins me-1"></i>Monthly Allowance (Rs)</label>
+                  <input type="number" name="monthly_allowance" class="mh-input" min="0" step="100"
+                    value="{{ profile.monthly_allowance if profile.monthly_allowance else '' }}" placeholder="e.g. 5000">
+                </div>
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-quote-left me-1"></i>Bio (optional)</label>
+                  <input type="text" name="bio" class="mh-input" maxlength="300"
+                    value="{{ profile.bio }}" placeholder="A short note about yourself">
+                </div>
+                <div class="col-12 mt-1">
+                  <button type="submit" class="btn-save"><i class="fas fa-save me-1"></i>Save Profile</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- CHANGE USERNAME -->
+        <div class="mh-section">
+          <div class="mh-section-title">Change Username</div>
+          <div class="mh-card">
+            <div style="font-size:.82rem;color:var(--text-light);margin-bottom:1rem;padding:.75rem 1rem;background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.2);border-radius:10px">
+              <i class="fas fa-info-circle me-1" style="color:var(--accent)"></i>
+              Current username: <strong style="color:var(--text)">{{ username }}</strong>
+              &nbsp;·&nbsp; You will be logged in with the new username after saving.
+            </div>
+            <form id="unForm">
+              <div class="row g-2">
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-at me-1"></i>New Username</label>
+                  <input type="text" name="new_username" class="mh-input" minlength="3" maxlength="50"
+                    placeholder="Min 3 chars, letters/numbers/_/-" autocomplete="username">
+                </div>
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-lock me-1"></i>Confirm with Password</label>
+                  <input type="password" name="password" class="mh-input"
+                    placeholder="Your current password" autocomplete="current-password">
+                </div>
+                <div class="col-12 mt-1">
+                  <button type="submit" class="btn-save"><i class="fas fa-at me-1"></i>Save Username</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- CHANGE PASSWORD -->
+        <div class="mh-section">
+          <div class="mh-section-title">Change Password</div>
+          <div class="mh-card">
+            <form id="pwForm">
+              <div class="row g-2">
+                <div class="col-12">
+                  <label class="mh-form-label"><i class="fas fa-lock me-1"></i>Current Password</label>
+                  <input type="password" name="current_password" class="mh-input" placeholder="Enter current password" autocomplete="current-password">
+                </div>
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-key me-1"></i>New Password</label>
+                  <input type="password" name="new_password" class="mh-input" placeholder="Min 6 characters" autocomplete="new-password">
+                </div>
+                <div class="col-sm-6">
+                  <label class="mh-form-label"><i class="fas fa-check-circle me-1"></i>Confirm New Password</label>
+                  <input type="password" name="confirm_password" class="mh-input" placeholder="Repeat new password" autocomplete="new-password">
+                </div>
+                <div class="col-12 mt-1">
+                  <button type="submit" class="btn-danger"><i class="fas fa-shield-alt me-1"></i>Update Password</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="mhToast" class="mh-toast"></div>
+
+  <script>
+  (function(){
+    function toast(msg, err){
+      var t = document.getElementById('mhToast');
+      t.textContent = msg;
+      t.classList.toggle('error', !!err);
+      t.classList.add('show');
+      clearTimeout(t._t);
+      t._t = setTimeout(function(){ t.classList.remove('show','error'); }, 2800);
+    }
+
+    async function apiPost(url, payload){
+      var res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var data = await res.json();
+      if(!res.ok) throw new Error(data.error||'Request failed');
+      return data;
+    }
+
+    // Profile form
+    var pf = document.getElementById('profileForm');
+    if(pf){
+      pf.addEventListener('submit', async function(e){
+        e.preventDefault();
+        var fd = new FormData(pf);
+        var payload = Object.fromEntries(fd.entries());
+        try{
+          await apiPost('/api/profile', payload);
+          toast('✅ Profile saved!');
+          // Update avatar initial
+          var dn = (payload.display_name||'').trim();
+          var av = document.getElementById('avatarInitials');
+          if(av && dn) av.textContent = dn[0].toUpperCase();
+        }catch(err){ toast(err.message||'Save failed',true); }
+      });
+    }
+
+    // Username form
+    var unf = document.getElementById('unForm');
+    if(unf){
+      unf.addEventListener('submit', async function(e){
+        e.preventDefault();
+        var fd = new FormData(unf);
+        var nu = (fd.get('new_username')||'').trim();
+        var pw = fd.get('password')||'';
+        if(!nu){ toast('Enter a new username',true); return; }
+        if(!pw){ toast('Enter your password to confirm',true); return; }
+        try{
+          var data = await apiPost('/api/change-username',{new_username:nu, password:pw});
+          toast('✅ Username changed to @' + data.new_username + '!');
+          unf.reset();
+          // Update every place the old username is shown on the page
+          document.querySelectorAll('.username-display').forEach(function(el){
+            el.textContent = data.new_username;
+          });
+          // Reload after 1.5s so the server-rendered username in the hero refreshes
+          setTimeout(function(){ location.reload(); }, 1600);
+        }catch(err){ toast(err.message||'Failed',true); }
+      });
+    }
+
+    // Password form
+    var pwf = document.getElementById('pwForm');
+    if(pwf){
+      pwf.addEventListener('submit', async function(e){
+        e.preventDefault();
+        var fd = new FormData(pwf);
+        var cur = fd.get('current_password'), np = fd.get('new_password'), cp = fd.get('confirm_password');
+        if(np !== cp){ toast('New passwords do not match',true); return; }
+        if(np.length < 6){ toast('New password must be at least 6 characters',true); return; }
+        try{
+          await apiPost('/api/change-password',{current_password:cur, new_password:np});
+          toast('🔒 Password updated!');
+          pwf.reset();
+        }catch(err){ toast(err.message||'Failed',true); }
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
