@@ -1,25 +1,49 @@
 import os
 import mysql.connector
+from mysql.connector import pooling
 from dotenv import load_dotenv
 
 load_dotenv()
 
+_pool = None
+
 def _ssl_args():
-    """Return SSL dict if DB_SSL=true, else empty dict."""
     if os.getenv("DB_SSL", "").lower() in ("true", "1", "yes"):
         return {"ssl_disabled": False}
     return {}
 
+def _get_pool():
+    global _pool
+    if _pool is None:
+        _pool = pooling.MySQLConnectionPool(
+            pool_name="studentflow_pool",
+            pool_size=3,          # max 3 simultaneous connections (safe for Aiven free)
+            pool_reset_session=True,
+            host=os.getenv("DB_HOST", "localhost"),
+            port=int(os.getenv("DB_PORT", "3306")),
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD", ""),
+            database=os.getenv("DB_NAME", "expense_tracker"),
+            connection_timeout=10,
+            **_ssl_args()
+        )
+    return _pool
+
 def get_conn():
-    """Get a database connection."""
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "expense_tracker"),
-        **_ssl_args()
-    )
+    """Get a pooled database connection."""
+    try:
+        return _get_pool().get_connection()
+    except Exception:
+        # Fallback to direct connection if pool fails
+        return mysql.connector.connect(
+            host=os.getenv("DB_HOST", "localhost"),
+            port=int(os.getenv("DB_PORT", "3306")),
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD", ""),
+            database=os.getenv("DB_NAME", "expense_tracker"),
+            connection_timeout=10,
+            **_ssl_args()
+        )
 
 def init_db():
     """Initialize the database and create tables if they don't exist."""

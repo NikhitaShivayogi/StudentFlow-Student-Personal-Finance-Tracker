@@ -956,15 +956,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ── Refresh all ───────────────────────────────────────────────────────────
   async function refresh() {
-    await Promise.all([
-      loadSummary(),
-      loadTransactions(),
-      loadPieChart(),
-      loadTimeChart(),
-      loadMonthlyTable()
-    ]);
+    // Load sequentially to avoid overwhelming Aiven free tier connections
+    try { await loadSummary(); } catch(e) { console.warn('summary', e); }
+    try { await loadTransactions(); } catch(e) { console.warn('transactions', e); }
+    try { await loadPieChart(); } catch(e) { console.warn('pie', e); }
+    try { await loadTimeChart(); } catch(e) { console.warn('time', e); }
+    try { await loadMonthlyTable(); } catch(e) { console.warn('monthly', e); }
   }
 
-  // ── Initial load ──────────────────────────────────────────────────────────
-  refresh().catch(function () { notify('Failed to load dashboard', true); });
+  // ── Initial load with retry ───────────────────────────────────────────────
+  async function initialLoad() {
+    try {
+      await refresh();
+    } catch(e) {
+      // If first load fails (Render cold start), retry after 3 seconds
+      setTimeout(async function() {
+        try { await refresh(); } catch(e2) { notify('Failed to load dashboard', true); }
+      }, 3000);
+    }
+  }
+
+  initialLoad();
 });
