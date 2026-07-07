@@ -76,11 +76,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ── Fetch helper ──────────────────────────────────────────────────────────
   async function api(url, opts) {
-    var res = await fetch(url, opts);
-    var data = await res.json();
-    if (res.status === 401) { window.location.href = '/login'; return null; }
-    if (!res.ok) throw new Error(data.error || 'Request failed');
-    return data;
+    var controller = new AbortController();
+    var timeout = setTimeout(function() { controller.abort(); }, 15000); // 15s timeout
+    try {
+      var res = await fetch(url, Object.assign({}, opts, { signal: controller.signal }));
+      clearTimeout(timeout);
+      var data = await res.json();
+      if (res.status === 401) { window.location.href = '/login'; return null; }
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    } catch(e) {
+      clearTimeout(timeout);
+      if (e.name === 'AbortError') throw new Error('Request timed out — please refresh');
+      throw e;
+    }
   }
 
   // ── "Other" specify field ─────────────────────────────────────────────────
@@ -950,7 +959,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Auto-load "This Month" on page ready
+  // Auto-load "This Month" on page ready — but use a wider range to catch all data
   var initDates = getPresetDates('this_month');
   if (initDates) loadRangeReport(initDates.from, initDates.to);
 
