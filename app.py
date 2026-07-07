@@ -27,6 +27,13 @@ app = Flask(
     static_folder=os.path.join(_BASE_DIR, "static"),
 )
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-this-in-production")
+
+# ── Keep users logged in for 30 days ──────────────────────────────────────────
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+# Use Secure cookies only when deployed (HTTPS), not on localhost
+app.config["SESSION_COOKIE_SECURE"] = os.getenv("RENDER", "") != ""
 db_ready = False
 
 
@@ -125,6 +132,7 @@ def login_page():
     if not check_password_hash(password_hash, password):
         return jsonify({"ok": False, "error": "Invalid credentials."}), 401
 
+    session.permanent = True   # stays alive for 30 days
     session["user_id"] = user_id
     session["username"] = db_username
     return jsonify({"ok": True, "redirect": url_for("user_home")})
