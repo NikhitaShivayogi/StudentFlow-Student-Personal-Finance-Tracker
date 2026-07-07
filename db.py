@@ -4,22 +4,31 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def _ssl_args():
+    """Return SSL dict if DB_SSL=true, else empty dict."""
+    if os.getenv("DB_SSL", "").lower() in ("true", "1", "yes"):
+        return {"ssl_disabled": False}
+    return {}
+
 def get_conn():
     """Get a database connection."""
     return mysql.connector.connect(
         host=os.getenv("DB_HOST", "localhost"),
         port=int(os.getenv("DB_PORT", "3306")),
         user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", "Nikita@2004"),
-        database=os.getenv("DB_NAME", "expense_tracker")
+        password=os.getenv("DB_PASSWORD", ""),
+        database=os.getenv("DB_NAME", "expense_tracker"),
+        **_ssl_args()
     )
 
 def init_db():
     """Initialize the database and create tables if they don't exist."""
     conn = mysql.connector.connect(
         host=os.getenv("DB_HOST", "localhost"),
+        port=int(os.getenv("DB_PORT", "3306")),
         user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", "")
+        password=os.getenv("DB_PASSWORD", ""),
+        **_ssl_args()
     )
     cur = conn.cursor()
     db_name = os.getenv("DB_NAME", "expense_tracker")
@@ -42,7 +51,6 @@ def init_db():
         """
     )
 
-    # transactions table supports both income and expense
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS transactions (
@@ -59,7 +67,6 @@ def init_db():
         """
     )
 
-    # budget_goals: monthly budget limit per user
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS budget_goals (
@@ -72,7 +79,6 @@ def init_db():
         """
     )
 
-    # Migrate old 'expenses' table data if it exists
     try:
         cur.execute("SHOW TABLES LIKE 'expenses'")
         if cur.fetchone():
@@ -92,7 +98,6 @@ def init_db():
     except mysql.connector.Error:
         pass
 
-    # user_profiles: optional student profile info
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS user_profiles (
